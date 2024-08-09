@@ -1,0 +1,176 @@
+local TweenService = game:GetService("TweenService")
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create GUI elements
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "NotificationGui"
+screenGui.Parent = playerGui
+
+-- Main Frame
+local frame = Instance.new("Frame")
+frame.Name = "Frame"
+frame.Size = UDim2.new(0, 400, 0, 50)
+frame.Position = UDim2.new(1, 350, 1, 10) -- Start position off-screen to the right
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 0.5
+frame.Visible = false
+frame.Parent = screenGui
+
+-- Larger Square on the Left
+local largeSquare = Instance.new("Frame")
+largeSquare.Name = "LargeSquare"
+largeSquare.Size = UDim2.new(0, 80, 0, 50) -- Larger size for the square
+largeSquare.Position = UDim2.new(0, 0, 0, 0) -- Positioned on the left side of the frame
+largeSquare.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+largeSquare.BackgroundTransparency = 0.5
+largeSquare.Parent = frame
+
+-- Red Exclamation Mark Inside the Square
+local redExclamation = Instance.new("TextLabel")
+redExclamation.Name = "RedExclamation"
+redExclamation.Size = UDim2.new(1, 0, 1, 0) -- Fill the entire square
+redExclamation.Position = UDim2.new(0, 0, 0, 0)
+redExclamation.BackgroundTransparency = 1
+redExclamation.TextColor3 = Color3.fromRGB(255, 0, 0)
+redExclamation.TextSize = 30
+redExclamation.Text = "!"
+redExclamation.TextStrokeTransparency = 0.8
+redExclamation.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+redExclamation.Parent = largeSquare
+
+-- Text Label
+local textLabel = Instance.new("TextLabel")
+textLabel.Name = "TextLabel"
+textLabel.Size = UDim2.new(1, -100, 1, 0) -- Adjusted to fit within the frame, accounting for the large square
+textLabel.Position = UDim2.new(0, 90, 0, 0) -- Positioned to the right of the large square
+textLabel.BackgroundTransparency = 1
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextSize = 18
+textLabel.TextWrapped = true
+textLabel.Text = ""
+textLabel.Parent = frame
+
+-- Create tween info
+local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+-- Tween to show the notification (slide in)
+local showTween = TweenService:Create(frame, tweenInfo, {
+    Position = UDim2.new(1, -420, 1, -60) -- End position visible on screen
+})
+
+-- Tween to hide the notification (slide out)
+local hideTween = TweenService:Create(frame, tweenInfo, {
+    Position = UDim2.new(1, 350, 1, 10) -- Off-screen to the right
+})
+
+-- Function to show the notification
+local function showNotification(message, duration)
+    textLabel.Text = message
+    frame.Visible = true
+    frame.Position = UDim2.new(1, 350, 1, 10) -- Start position off-screen to the right
+
+    -- Play the show tween
+    showTween:Play()
+    
+    -- Wait for the duration of the notification
+    wait(duration or 5)
+    
+    -- Play the hide tween
+    hideTween:Play()
+    
+    -- Wait for the hide animation to complete
+    hideTween.Completed:Wait()
+    
+    -- Make the frame invisible after hiding
+    frame.Visible = false
+end
+
+-- Example usage of the showNotification function
+-- showNotification("Hello, this is a notification!", 5)  -- Change the duration as needed
+
+-- Example integration with the rest of the script
+local HWIDTable = loadstring(game:HttpGet("https://pastebin.com/raw/HATpbd2C"))()
+local HWID = game:GetService("RbxAnalyticsService"):GetClientId()
+
+local function isWhitelisted()
+    for _, v in pairs(HWIDTable) do
+        if v == HWID then
+            return true
+        end
+    end
+    return false
+end
+
+local excludedGameIDs = {
+    [14165106859] = true,
+    [10937521050] = true,
+    [9847297509] = true,
+    [16625111026] = true,
+    [9884896385] = true,
+    [2788229376] = true,
+    [17895632819] = true,
+    [13621938427] = true
+}
+
+local targetGameIDs = {
+    [14071822972] = true,
+    [14070029709] = true,
+    [14069122388] = true,
+    [15336080245] = true,
+    [14069678431] = true
+}
+
+local newScriptGameIDs = {
+    [14165106859] = true,
+    [10937521050] = true,
+    [9847297509] = true,
+    [16625111026] = true,
+    [9884896385] = true
+}
+
+local scriptURL1 = "https://raw.githubusercontent.com/tentray/Universal/main/Tentra%20Hub"
+local scriptURL2 = "https://raw.githubusercontent.com/tentray/dqdad/main/sdaff"
+local scriptURL3 = "https://raw.githubusercontent.com/tentray/finaltentrashub/main/ScamscriptbyTentrashub"
+local newScriptURL = "https://raw.githubusercontent.com/tentray/mps/main/tentrahub"
+
+local function isExcludedGame()
+    return excludedGameIDs[game.PlaceId] == true
+end
+
+local function isTargetGame()
+    return targetGameIDs[game.PlaceId] == true
+end
+
+local function isSpecificGameForScript2()
+    return game.PlaceId == 13621938427
+end
+
+local function isNewScriptGame()
+    return newScriptGameIDs[game.PlaceId] == true
+end
+
+local function executeScript(url)
+    pcall(function()
+        local func = loadstring(game:HttpGet(url))
+        if func then
+            func()
+        end
+    end)
+end
+
+if isWhitelisted() then
+    showNotification("You are whitelisted!", 3)
+
+    if isNewScriptGame() then
+        executeScript(newScriptURL)
+    elseif isTargetGame() then
+        executeScript(scriptURL3)
+    elseif isSpecificGameForScript2() then
+        executeScript(scriptURL2)
+    elseif not isExcludedGame() then
+        executeScript(scriptURL1)
+    end
+else
+    showNotification("You are not whitelisted!", 3)
+end
